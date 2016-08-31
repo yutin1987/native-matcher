@@ -37,7 +37,6 @@ class Expect {
         const message =
           typeof result.message === 'function' ? result.message(this.isNot) : result.message;
         const error = new Error(message);
-        Error.captureStackTrace(error, throwingMatcher);
         throw error;
       }
     };
