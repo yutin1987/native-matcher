@@ -2,10 +2,8 @@ import toBe from './matchers/toBe';
 import toEqual from './matchers/toEqual';
 import toThrowError from './matchers/toThrowError';
 
-const GLOBAL_SYMBOL = Symbol.for('$$native-matcher');
-
-if (!global[GLOBAL_SYMBOL]) {
-  Object.defineProperty(global, GLOBAL_SYMBOL, { value: Object.create(null) });
+if (!global.NATIVE_MATCHER) {
+  global.NATIVE_MATCHER = {};
 }
 
 class Expect {
@@ -22,7 +20,7 @@ class Expect {
   constructor(actual) {
     this.actual = actual;
 
-    const allMatchers = global[GLOBAL_SYMBOL];
+    const allMatchers = global.NATIVE_MATCHER;
     Object.keys(allMatchers).forEach(name => {
       this[name] = this.runMatcher(allMatchers[name]);
     });
@@ -48,9 +46,7 @@ export default function expect(actual: any): Expect {
 }
 
 export function addMatcher(name: String, matcher: Function): void {
-  const obj = {};
-  obj[name] = matcher;
-  Object.assign(global[GLOBAL_SYMBOL], obj);
+  global.NATIVE_MATCHER[name] = matcher;
 }
 
 addMatcher('toBe', toBe);
